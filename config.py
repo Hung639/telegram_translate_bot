@@ -1,7 +1,10 @@
 # config.py
 
-BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
-OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
+import os
 
-# Danh sách Telegram user_id của admin (bạn và đồng nghiệp)
-AUTHORIZED_USERS = [123456789, 987654321]  # <-- Thay bằng ID thật
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Danh sách admin cách nhau bằng dấu phẩy, ví dụ: "123456789,987654321"
+raw_admins = os.getenv("AUTHORIZED_USERS", "")
+AUTHORIZED_USERS = [int(uid.strip()) for uid in raw_admins.split(",") if uid.strip().isdigit()]
