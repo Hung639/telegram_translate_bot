@@ -1,34 +1,25 @@
 # bot.py
 
-import openai
+from openai import OpenAI
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
     ApplicationBuilder, MessageHandler, ContextTypes,
     CallbackQueryHandler, filters
 )
-import time 
+import time
 from config import BOT_TOKEN, OPENAI_API_KEY, AUTHORIZED_USERS
 
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 async def translate_with_gpt(text, to_lang="en", retries=3):
     direction = "sang tiếng Anh" if to_lang == "en" else "sang tiếng Việt"
     prompt = f"""
-Bạn là một trợ lý hỗ trợ khách hàng chuyên nghiệp trong lĩnh vực Facebook Ads, chuyên giải quyết các vấn đề liên quan đến:
-1. Setup tài khoản quảng cáo (BM, VIA, Pixel, Page, Proxy, Catalog…)
-2. Xử lý lỗi không tiêu tiền, checkpoint, xác minh, camp lỗi, bị giới hạn, add thẻ...
-3. Giao tiếp khách hàng qua tiếng {'Việt' if to_lang == 'en' else 'Anh'} – {'Anh' if to_lang == 'en' else 'Việt'} chuyên ngành Ads.
-
-Hãy dịch câu sau {direction} một cách:
-- Ngắn gọn
-- Chuyên nghiệp
-- Sát nghĩa và thân thiện
-- Đúng với ngữ cảnh đại lý cung cấp tài khoản, BM, proxy chạy ads Facebook
-
-Nội dung cần dịch:
-\"{text}\"
-"""
-    response = openai.ChatCompletion.create(
+    Bạn là một trợ lý dịch thuật chuyên nghiệp cho các cuộc trò chuyện về Facebook Ads. 
+    Hãy dịch câu sau {direction} một cách ngắn gọn, chuyên nghiệp, sát nghĩa và thân thiện.
+    Nội dung cần dịch:
+    "{text}"
+    """
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
