@@ -29,6 +29,7 @@ async def translate_with_gpt(text, to_lang="en", retries=3):
 
 # Gửi inline button khi khách nhắn
 async def handle_incoming(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print(f"[DEBUG] Received message from {update.message.from_user.id}: {update.message.text}")
     user_id = update.message.from_user.id
     text = update.message.text
     if user_id not in AUTHORIZED_USERS:
